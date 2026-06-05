@@ -168,3 +168,4 @@ SELECT
 FROM vehicle_analysis
 
 ORDER BY revenue_rank;
+
