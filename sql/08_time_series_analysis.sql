@@ -212,4 +212,232 @@ SELECT
     ) AS growth_percentage
 FROM revenue_analysis;
 
+--Which vehicle makes show the most consistent positive growth over time?
+--Expected Output: make,growth_months, decline_months ,total_months_analyzed, growth_consistency_percentage
+
+WITH vehicle_analysis AS (
+
+    SELECT
+
+        v.make,
+
+        DATE_TRUNC('month', a.sale_date)::date AS sale_month,
+
+        SUM(a.selling_price) AS total_revenue
+
+    FROM vehicles v
+
+    JOIN auction_sales a
+
+        ON v.vehicle_id = a.vehicle_id
+
+    GROUP BY v.make, DATE_TRUNC('month', a.sale_date)::date
+
+),
+
+revenue_growth_analysis AS (
+
+    SELECT
+
+        make,
+
+        sale_month,
+
+        total_revenue,
+
+        LAG(total_revenue) OVER(
+
+            PARTITION BY make
+
+            ORDER BY sale_month
+
+        ) AS previous_month
+
+    FROM vehicle_analysis
+
+),
+
+status_analysis AS (
+
+    SELECT
+
+        make,
+
+        CASE
+
+            WHEN total_revenue > previous_month THEN 'Growth'
+
+            WHEN total_revenue < previous_month THEN 'Decline'
+
+            ELSE 'Constant'
+
+        END AS month_status
+
+    FROM revenue_growth_analysis
+
+    WHERE previous_month IS NOT NULL
+
+),
+growth_decline_counts AS (
+
+    SELECT
+
+        make,
+
+        COUNT(
+
+            CASE
+
+                WHEN month_status = 'Growth'
+
+                THEN 1
+
+            END
+
+        ) AS growth_months,
+
+        COUNT(
+
+            CASE
+
+                WHEN month_status = 'Decline'
+
+                THEN 1
+
+            END
+
+        ) AS decline_months
+
+    FROM status_analysis
+
+    GROUP BY make
+
+)
+
+SELECT
+    make,
+    growth_months,
+    decline_months,
+    ROUND(
+        growth_months * 100.0
+        /
+        (growth_months + decline_months),
+        2
+    ) AS growth_consistency_percentage
+FROM growth_decline_counts
+ORDER BY growth_consistency_percentage DESC;
+
+--Which vehicle makes are improving their average selling 
+--price over time?
+--Expected Output: make, sale_month, average_selling_price, previous_month_avg_price
+--price_growth_percentage
+
+WITH vehicle_analysis AS (
+    SELECT
+        v.make,
+        DATE_TRUNC('month', a.sale_date)::date AS sale_month,
+        ROUND(AVG(a.selling_price), 2) AS average_selling_price
+    FROM vehicles v
+    JOIN auction_sales a
+        ON v.vehicle_id = a.vehicle_id
+    GROUP BY
+        v.make,
+        DATE_TRUNC('month', a.sale_date)::date
+),
+
+previous_month_analysis AS (
+    SELECT
+        make,
+        sale_month,
+        average_selling_price,
+        LAG(average_selling_price) OVER (
+            PARTITION BY make
+            ORDER BY sale_month
+        ) AS previous_month_avg_price
+    FROM vehicle_analysis
+)
+
+SELECT
+    make,
+    sale_month,
+    average_selling_price,
+    previous_month_avg_price,
+    ROUND(
+        (
+            (average_selling_price - previous_month_avg_price)
+            * 100.0
+        )
+        /
+        NULLIF(previous_month_avg_price, 0),
+        2
+    ) AS price_growth_percentage
+FROM previous_month_analysis
+WHERE previous_month_avg_price IS NOT NULL
+ORDER BY price_growth_percentage DESC;
+
+--Which states have the most stable revenue performance over time?
+
+WITH vehicle_analysis AS (
+
+    SELECT
+
+        state,
+
+        DATE_TRUNC('month', sale_date)::date AS sale_month,
+
+        SUM(selling_price) AS total_revenue
+
+    FROM auction_sales
+
+    GROUP BY 1,2
+
+)
+
+SELECT
+
+    state,
+
+    ROUND(AVG(total_revenue),2) AS average_monthly_revenue,
+
+    ROUND(STDDEV(total_revenue),2) AS revenue_volatility,
+
+    DENSE_RANK() OVER(
+
+        ORDER BY STDDEV(total_revenue)
+
+    ) AS stability_rank
+
+FROM vehicle_analysis
+
+GROUP BY state
+
+ORDER BY stability_rank;
+
+--Which vehicle makes generate above-average revenue while 
+--selling fewer vehicles than average?
+--expected_output : make, vechile_count, total_revenue, average_selling_price
+
+
+WITH vehicle_analysis AS (
+    SELECT
+        v.make,
+        COUNT(*) AS total_count,
+        SUM(a.selling_price) AS total_revenue,
+        ROUND(AVG(a.selling_price),2) AS average_selling_price
+    FROM vehicles v
+    JOIN auction_sales a
+        ON v.vehicle_id = a.vehicle_id
+    GROUP BY v.make
+)
+
+SELECT *
+FROM vehicle_analysis
+WHERE total_count < (
+    SELECT AVG(total_count)
+    FROM vehicle_analysis
+)
+AND total_revenue > (
+    SELECT AVG(total_revenue)
+    FROM vehicle_analysis
+);
 
