@@ -49,6 +49,7 @@ Car_sales_analysis/
 │   ├── 02_auction_sales_table.sql
 │   ├── 03_load_vehicles.sql
 │   └── 04_load_auction_sales.sql
+    
 │
 ├── dashboards/
 ├── notebooks/
@@ -120,21 +121,6 @@ Load sales records into: auction_sales
 
 using a JOIN on VIN to retrieve the generated vehicle identifiers.
 
-⸻
-
-Work Completed
-
-* Created PostgreSQL database
-* Created staging table
-* Imported CSV data
-* Created normalized vehicle table
-* Created auction sales table
-* Implemented primary keys
-* Implemented foreign key relationships
-* Loaded data into both tables
-* Connected project to GitHub
-* Created feature branch workflow
-
 ## Database Schema
 
 The project uses a normalized relational database design consisting of:
@@ -144,16 +130,165 @@ The project uses a normalized relational database design consisting of:
 - auction_sales
 
 Future versions will include an Entity Relationship Diagram (ERD).
+SQL Analysis Performed
 
-## Business Questions
+The following SQL analyses were completed:
 
-This project aims to answer questions such as:
+Revenue Analysis
 
-1. Which vehicle makes generate the highest sales revenue?
-2. Which vehicle models sell most frequently?
-3. How does vehicle condition impact selling price?
-4. How does odometer reading affect selling price?
-5. Which states generate the highest auction sales volume?
-6. What is the average selling price by vehicle make and model?
+* Total Revenue
+* Revenue by Make
+* Revenue by State
+* Revenue by Year
 
+Vehicle Analysis
+
+* Vehicle Count by Make
+* Vehicle Count by Body Type
+* Top Selling Vehicle Makes
+
+Pricing Analysis
+
+* Average Selling Price
+* Average Selling Price by Transmission
+* Average Selling Price by Make
+
+Advanced SQL Concepts
+
+* Aggregate Functions
+* GROUP BY
+* HAVING
+* Common Table Expressions (CTEs)
+* Window Functions
+* Ranking Functions
+* Joins
+* Foreign Keys
+
+⸻
+
+## Tableau Dashboard
+
+* An interactive Tableau dashboard was developed to visualize key business metrics and trends.
+* The complete dataset contains over 550,000 vehicle auction records and was used for SQL analysis and Tableau dashboard development.
+
+Dashboard KPIs
+
+* Total Revenue
+* Total Vehicle Count
+* Average Selling Price
+* Average Vehicle Condition
+
+Dashboard Visualizations
+
+* Revenue by Year
+* Revenue by Make (Top 10)
+* Vehicle Count by Make (Top 10)
+* Revenue by State (Top 10)
+* Vehicle Count by Body Type (Top 10)
+* Average Selling Price by Transmission
+
+Interactive Filters
+
+Users can dynamically filter dashboard results by:
+
+* Year
+* Vehicle Make
+* Body Type
+* Transmission
+
+All KPIs and charts automatically update based on filter selections.
+
+⸻
+
+## Dashboard Preview
+Add your dashboard screenshot here: dashboards/dashboard_screenshot.png
+
+Live Tableau Dashboard
+
+View the published Tableau dashboard here:
+https://public.tableau.com/app/profile/sravanthi.gandi/viz/Used_Car_Sales_Dashboard/Dashboard1?publish=yes
+
+
+## Key Business Insights
+
+Revenue Insights
+
+* Ford generated the highest auction revenue.
+* Chevrolet and Nissan were among the top revenue-generating brands.
+* Florida and California generated the highest auction revenues.
+
+Vehicle Insights
+
+* Sedans and SUVs dominate auction inventory.
+* Ford vehicles account for the largest share of auction transactions.
+
+Pricing Insights
+
+* Automatic transmission vehicles command higher average selling prices than manual transmission vehicles.
+* Vehicle condition and mileage significantly influence selling price.
+
+Market Trends
+
+* Revenue increased significantly between 2010 and 2014 model years.
+* Certain body types consistently outperform others in auction volume.
+
+⸻
+
+## Work Completed
+
+Database & ETL
+
+* Created PostgreSQL database
+* Created staging table
+* Imported CSV data
+* Designed normalized schema
+* Created vehicle table
+* Created auction sales table
+* Implemented primary keys
+* Implemented foreign keys
+* Loaded production data
+* Built ETL workflow
+
+SQL Development
+
+* Created analytical SQL queries
+* Built revenue analysis reports
+* Built vehicle count reports
+* Practiced advanced SQL concepts
+
+Tableau Development
+
+* Created KPI cards
+* Built interactive visualizations
+* Added dashboard filters
+* Published Tableau dashboard
+* Connected SQL insights with business reporting
+
+Version Control
+
+* Initialized Git repository
+* Created GitHub repository
+* Implemented Git workflow
+* Maintained project documentation
+
+⸻
+
+Future Enhancements
+
+* Create ERD diagram
+* Add Python data analysis
+* Add predictive price modeling
+* Build Power BI version
+* Automate ETL process using Python
+* Deploy database in cloud environment
+
+## Author
+
+Sravanthi Gandi
+
+SQL | PostgreSQL | Tableau | Data Analytics
+
+GitHub: https://github.com/Sravanthi816/car-sales-analysis
+
+LinkedIn: www.linkedin.com/in/sravanthi-gandi-97ba13246
 
